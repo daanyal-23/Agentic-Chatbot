@@ -1,169 +1,167 @@
-# 🛠️ Corrective RAG  
-A fully modular **Corrective Retrieval-Augmented Generation (RAG)** pipeline built using **LangGraph**, **Streamlit**, and **Groq LLMs**.
-
-This project demonstrates an advanced RAG system that **retrieves, grades, refines, and augments context** before generating an answer — significantly improving reliability compared to standard single-pass RAG.
+# 🤖 Agentic Chatbot Platform  
+A modular, agent-driven conversational AI system built using **LangChain**, **LangGraph**, **Streamlit**, and **LLMs (Groq/HuggingFace)**.  
+This project demonstrates how an LLM can behave as an **intelligent agent** — capable of routing queries, calling tools, retrieving information, maintaining memory, and generating refined responses.
 
 ---
 
 ## 🧩 How It Works
 
-The **Corrective RAG pipeline** follows these intelligent steps:
+The Agentic Chatbot follows an **agent-based workflow** consisting of:
 
-### **1️⃣ Retrieve**  
-Fetch candidate documents from the local knowledge base.
+### **1️⃣ Router Agent**  
+Classifies the user query and decides the next best action:  
+- Use LLM directly  
+- Trigger a tool call  
+- Perform retrieval  
+- Ask for clarification
 
-### **2️⃣ Grade**  
-Evaluate each retrieved document to determine how relevant it is to the user’s query.
+### **2️⃣ Retrieval Agent (Optional)**  
+Fetches relevant context when the query requires external information.
 
-### **3️⃣ Transform**  
-If the retrieval quality is poor, automatically **rewrite** the user query using an LLM to get better retrieval results.
+### **3️⃣ Tool Agent**  
+Handles external tool calls such as:  
+- Web search  
+- Calculation  
+- Utilities (formatting, conversions, etc.)
 
-### **4️⃣ Web Search (Fallback)**  
-If domain knowledge is missing, trigger an **external search** (e.g., Tavily API) to bring in fresh information.
+### **4️⃣ LLM Answer Agent**  
+Generates a natural, coherent answer using Gemma/Groq/HuggingFace LLMs.
 
-### **5️⃣ Generate**  
-Use **Groq-hosted LLMs** to produce the final answer using the best available context.
+### **5️⃣ Memory & Logging**  
+Conversation context, tool traces, and decision flow are stored for improved continuity.
 
-### **6️⃣ UI Feedback**  
-The **Streamlit frontend** displays each workflow step:
-- Retrieved docs  
-- Relevance grades  
-- Rewritten queries  
-- Web search results  
-- Final generated answer  
-
-This provides complete **transparency of the reasoning pipeline**.
+### **6️⃣ Streamlit UI**  
+Provides a clean, interactive chat interface showing:  
+✔ user messages  
+✔ agent decisions  
+✔ tool usage  
+✔ final LLM outputs  
 
 ---
 
 ## 🚀 Features
 
-- 📄 **Document Retrieval & Grading**  
-  Retrieves documents and filters them based on relevance.
-
-- 🔄 **Automatic Query Transformation**  
-  Rewrites user questions when retrieval is weak.
-
-- 🌐 **Web Search Fallback**  
-  Adds missing or new knowledge when necessary.
-
-- 🤖 **LLM-Powered Answer Generation**  
-  Uses Groq-hosted LLMs for fast, low-latency inference.
-
-- 📊 **Execution Logs in UI**  
-  Transparent end-to-end visualization of:  
-  `retrieve → grade → transform → search → generate`
+- 🧠 **Agentic Routing** — intelligently chooses the correct workflow path  
+- 🔧 **Tool Calling** — search, utilities, or custom tool integrations  
+- 🔄 **Query Understanding** — classifies intent before responding  
+- 📚 **Optional Retrieval Integration** — fetch documents when needed  
+- 🤖 **Low-latency LLM Generation** — via Groq or HuggingFace  
+- 🧵 **Memory Support** — maintains chat history  
+- 📊 **UI Transparency** — shows which agent acted and why  
+- ⚡ **Fast, lightweight Streamlit interface**
 
 ---
 
 ## 📂 Project Structure
 ```bash
-CorrectiveRAG/
+Agentic-Chatbot/
 │
-├── app.py # Streamlit app (UI entrypoint)
-├── main.py # CLI runner for workflow debugging
+├── app.py # Streamlit UI entrypoint
+├── main.py # Backend or graph testing entrypoint
 ├── requirements.txt # Dependencies
 ├── README.md # Documentation
-├── .env.example # Environment variable template
+├── .env.example # API key template
 │
 ├── src/
-│ ├── langgraphCorrectiveAI/
-│ │ ├── graph/
-│ │ │ └── workflow.py # Core workflow graph
-│ │ │
-│ │ ├── nodes/ # Workflow nodes
-│ │ │ ├── retrieve_node.py
-│ │ │ ├── grade_node.py
-│ │ │ ├── transform_node.py
-│ │ │ ├── web_search_node.py
-│ │ │ └── generate_node.py
-│ │ │
-│ │ ├── tools/
-│ │ │ └── search_tool.py # Embeddings, retrieval, search utilities
-│ │ │
-│ │ └── state/
-│ │ └── graph_state.py # Shared workflow state
+│ ├── agents/ # Core agent modules
+│ │ ├── router_agent.py
+│ │ ├── tool_agent.py
+│ │ ├── retrieval_agent.py
+│ │ └── llm_agent.py
 │ │
-│ └── UI/streamlitUI/
-│ ├── display_result.py
-│ ├── loadui.py
-│ └── uiconfigfile.py
+│ ├── graph/ # LangGraph workflow
+│ │ └── workflow.py
+│ │
+│ ├── tools/ # External tools
+│ │ ├── search_tool.py
+│ │ └── utils.py
+│ │
+│ └── state/ # Shared graph or conversation state
+│ └── agent_state.py
+│
+└── UI/
+└── streamlitUI/
+├── display_result.py
+├── loadui.py
+└── uiconfigfile.py
 ```
 
 ## ⚙️ Installation & Setup
 
 ### **1️⃣ Clone the Repository**
 ```bash
-git clone https://github.com/daanyal-23/corrective-rag-demo.git
-cd corrective-rag-demo
+git clone https://github.com/daanyal-23/Agentic-Chatbot.git
+cd Agentic-Chatbot
 ```
 2️⃣ Create a Virtual Environment
 ```bash
-Copy code
 python -m venv venv
-Windows
 ```
 ```bash
-Copy code
 venv\Scripts\activate
-Mac/Linux
 ```
 ```bash
-Copy code
 source venv/bin/activate
 ```
 3️⃣ Install Dependencies
 ```bash
-Copy code
 pip install -r requirements.txt
 ```
 4️⃣ Configure Environment Variables
-Create a .env file in the project root:
+Create a .env file:
 
-Copy code
 GROQ_API_KEY=your_groq_api_key
-TAVILY_API_KEY=your_tavily_api_key
-(You may also include any embedding model keys if needed.)
-
+HUGGINGFACE_API_KEY=your_hf_api_key
+LANGSMITH_API_KEY=optional
 5️⃣ Run the Streamlit App
 ```bash
 streamlit run app.py
 ```
 🧪 Example Workflow
-Enter a question in the Streamlit interface.
+User enters a message in the Streamlit chat.
 
-System retrieves documents and grades relevance.
+Router Agent analyzes query intent.
 
-If retrieval is poor, query is rewritten for improvement.
+Depending on the type of query, the router may:
 
-If required, external web search is triggered.
+Directly call the LLM
 
-Groq LLM generates the final, grounded answer.
+Invoke a tool
 
-UI shows each step with explanations.
+Perform retrieval
+
+The appropriate agent handles execution.
+
+LLM Agent generates a final answer.
+
+UI displays the full reasoning chain, including tool calls.
 
 📌 Future Improvements
-✅ Add unit tests for workflow nodes
+🔍 Add Retrieval-Augmented Generation (RAG) integration
 
-✅ Enhance frontend visualization
+📊 Add chat analytics and session metrics
 
-✅ Add multi-vector-store support (FAISS, Pinecone, Chroma)
+🧪 Add unit tests for agent decision logic
 
-✅ Dockerize for easier deployment
+🐳 Containerize with Docker
 
-⏳ Add evaluator agent for grounding verification
+🧠 Add memory persistence (Redis/SQLite)
 
-⏳ Add streaming output support in UI
+🧩 Extend with domain-specific tools (medical, finance, etc.)
+
+📈 Add LangSmith evaluation dashboard
 
 🤝 Contributing
-Contributions are welcome!
-Please open an issue before submitting major changes so we can discuss your ideas.
+PRs are welcome!
+For major changes, please open an issue to discuss the proposal before implementation.
 
 ❤️ Built With
-LangGraph – workflow orchestration
+LangChain – agent tools & LLM orchestration
 
-Groq LLMs – fast inference
+LangGraph – workflow routing
 
-Streamlit – interactive frontend
+Streamlit – interactive UI
 
-Python – glue for all components
+Groq / HuggingFace LLMs – fast inference
+
+Python – backend logic
